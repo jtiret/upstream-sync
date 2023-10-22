@@ -109,8 +109,7 @@ Files to change:
 - `src/services/EmailImportService.ts`: change the import service to search for a message using `MessageRepository.findOneByEmailUniversalMessageIdentifier` method instead of using the in-memory map.
 - `schema.sql`: index `message.email_id` and `email.universal_message_id`.
 
-Note: `MessageRow` in `src/datastore/schema/MessageRow.ts` is missing the `email_id` property found in `MessageEntity`. `MessageRepository.loadEntity` copes with this by populating `MessageEntity.email_id` with `MessageRow.id` instead, which is a bug since `MessageRepository.persist` doesn't use the `email_id` as `id` for the message.
-`MessageDisplayService.displayMessage` only works because emails and messages are created sequentially in the same order with incremental ids and `message.id` and `message.email_id` happen to match.
+Note: `MessageRow` in `src/datastore/schema/MessageRow.ts` is missing the `email_id` property found in `MessageEntity`. `MessageRepository.loadEntity` copes with this by populating `MessageEntity.email_id` with `MessageRow.id` instead, which is wrong since `MessageRepository.persist` doesn't use the `email_id` as `id` for the message. This will cause a bug when calling `findOneByEmailUniversalMessageIdentifier`: the loaded message from `loadEntity` won't have the correct `email_id`.
 
 ## Answer to task 4
 
