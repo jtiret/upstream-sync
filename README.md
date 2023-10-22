@@ -111,3 +111,23 @@ Files to change:
 
 Note: `MessageRow` in `src/datastore/schema/MessageRow.ts` is missing the `email_id` property found in `MessageEntity`. `MessageRepository.loadEntity` copes with this by populating `MessageEntity.email_id` with `MessageRow.id` instead, which is a bug since `MessageRepository.persist` doesn't use the `email_id` as `id` for the message.
 `MessageDisplayService.displayMessage` only works because emails and messages are created sequentially in the same order with incremental ids and `message.id` and `message.email_id` happen to match.
+
+## Answer to task 4
+
+I'd test the project with the following guidelines:
+
+1. unit test for pure business logic:
+
+   - snapshots testing for what can be tested based on a readable output, such as removing html tags from a string for instance
+   - standard JS assertions against outputs otherwise
+
+2. integration tests with mocks to test services:
+
+   - against a real database to test the repositories
+   - with mocked out repositories and network for the rest, typically making sure `EmailImportService.import` behaves correctly.
+
+3. some end-to end tests against a real servier to make sure that the main happy paths do work, all things considered
+
+A good rule of thumb is to write more integration tests and less unit and end-to-end tests, which are costly to write, run and maintain.
+
+I chose to test the `stripHtml` method because I just wrote it and it's a sensitive business logic part, as a unit test becuase it's pure business logic and as a snapshot since it produces a readable string output.
