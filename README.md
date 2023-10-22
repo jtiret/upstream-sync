@@ -97,3 +97,17 @@ Add a unit test, explain why you chose to test this particular part of the code 
 ## Feedback
 
 Your insights and feedback on the project and the process are invaluable. Please share your thoughts after you have completed the assignment.
+
+---
+
+## Answer to task 2
+
+To take messages stored in the database into account when grouping messages by threads we can look for a message in the database which associated email's `universalMessageId` matches the incoming email's `inReplyTo` property; if we find such a message we forward its `threadId` to the newly created message (assuming we do receive emails in chronological order).
+
+Files to change:
+
+- `src/services/EmailImportService.ts`: change the import service to search for a message using `MessageRepository.findOneByEmailUniversalMessageIdentifier` method instead of using the in-memory map.
+- `schema.sql`: index `message.email_id` and `email.universal_message_id`.
+
+Note: `MessageRow` in `src/datastore/schema/MessageRow.ts` is missing the `email_id` property found in `MessageEntity`. `MessageRepository.loadEntity` copes with this by populating `MessageEntity.email_id` with `MessageRow.id` instead, which is a bug since `MessageRepository.persist` doesn't use the `email_id` as `id` for the message.
+`MessageDisplayService.displayMessage` only works because emails and messages are created sequentially in the same order with incremental ids and `message.id` and `message.email_id` happen to match.
