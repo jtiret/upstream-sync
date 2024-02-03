@@ -36,6 +36,12 @@ export class EmailFetcherService {
 
   public async fetch(): Promise<EmailEntity[]> {
     const response = await axios.get<EmailResponse[]>("https://my-json-server.typicode.com/jtiret/upstream-sync/emails");
+
     return this.buildEntities(response.data);
+  }
+
+  public async fetchAndSort(): Promise<EmailEntity[]> {
+    const fetchedEmails = await this.fetch();
+    return fetchedEmails.sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 }

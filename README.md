@@ -82,17 +82,27 @@ Concretely, when running `yarn start`, the console should display messages group
 
 **Hint: The email API does not return items in a specific order. However, it may be necessary to process emails chronologically.**
 
+**My Answer: I created new async methods in EmailImportService which leverages the emails retrieved by the api. I also added a public method fetchAndSort to the EmailFetcherService to sort and fetch the data.**
+
+
 ### Task 2: Take messages stored in database into account
 
 Explain what would be needed, step by step, to take messages stored in the database into account when grouping messages by threads. You can write your answer in the `README.md` file. What parts of the code would you need to modify?
+
+**My Answer: I would leverage the method findOneByEmailUniversalMessageIdentifier in the MessageRepository to check if there's an existing message in the database with a universalMessageId that matches the inReplyTo property of the current email. If a match is found, this indicates the current email is part of an existing thread stored in the database, and the application would then add the email to that thread. I would maintain the chronological sort logic**
 
 ### Task 3: Remove HTML tags from messages
 
 When creating the messages, remove the HTML tags from the message body. Figure out the best place to add this logic and implement it.
 
+**My Answer: I added and leveraged the method removeHtmlTags in the MessageRepository**
+
+
 ### Task 4: Add a unit test
 
 Add a unit test, explain why you chose to test this particular part of the code and more generally what would be the best way to test this project.
+
+**My Answer: what I added in relation to task 1 is more likely to have bugs compared to the task 4. There are a lot of edge cases around that logic (I only tested 2 scenarios). The 2 scenarios were mainly in relation to the logic that lay in processEmailsIntoThreads.**
 
 ## Feedback
 
