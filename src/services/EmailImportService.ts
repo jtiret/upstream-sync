@@ -1,11 +1,11 @@
-import {EmailRepository} from "../datastore/repositories/EmailRepository";
-import {MessageRepository} from "../datastore/repositories/MessageRepository";
-import {ThreadRepository} from "../datastore/repositories/ThreadRepository";
-import {UserRepository} from "../datastore/repositories/UserRepository";
-import {EmailEntity} from "../model/entities/EmailEntity";
-import {MessageEntity} from "../model/entities/MessageEntity";
-import {ThreadEntity} from "../model/entities/ThreadEntity";
-import {EmailFetcherService} from "./EmailFetcherService";
+import { EmailRepository } from "../datastore/repositories/EmailRepository";
+import { MessageRepository } from "../datastore/repositories/MessageRepository";
+import { ThreadRepository } from "../datastore/repositories/ThreadRepository";
+import { UserRepository } from "../datastore/repositories/UserRepository";
+import { EmailEntity } from "../model/entities/EmailEntity";
+import { MessageEntity } from "../model/entities/MessageEntity";
+import { ThreadEntity } from "../model/entities/ThreadEntity";
+import { EmailFetcherService } from "./EmailFetcherService";
 
 export class EmailImportService {
   constructor(
@@ -13,7 +13,7 @@ export class EmailImportService {
     private readonly emailRepository: EmailRepository,
     private readonly messageRepository: MessageRepository,
     private readonly threadRepository: ThreadRepository,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
   ) {}
 
   public async import(): Promise<void> {
@@ -27,7 +27,9 @@ export class EmailImportService {
     return fetchedEmails;
   }
 
-  private async processEmailsIntoThreads(fetchedEmails: EmailEntity[]): Promise<void> {
+  private async processEmailsIntoThreads(
+    fetchedEmails: EmailEntity[],
+  ): Promise<void> {
     const threadMap = new Map<string, ThreadEntity>();
     const messagesPromises: Promise<MessageEntity>[] = [];
 
@@ -40,14 +42,15 @@ export class EmailImportService {
     await this.messageRepository.persist(messages);
   }
 
-  private async createOrAddToExisingThread(email: EmailEntity, threadMap: Map<string, ThreadEntity>) {
+  private async createOrAddToExisingThread(
+    email: EmailEntity,
+    threadMap: Map<string, ThreadEntity>,
+  ) {
     let thread: ThreadEntity;
 
     if (email.inReplyTo && threadMap.has(email.inReplyTo.toString())) {
       thread = threadMap.get(email.inReplyTo.toString())!;
-    }
-
-    else {
+    } else {
       thread = new ThreadEntity(email.subject || "No Subject");
       await this.threadRepository.persist([thread]);
     }
@@ -56,7 +59,10 @@ export class EmailImportService {
     return thread;
   }
 
-  private async createMessageFromEmail(email: EmailEntity, thread: ThreadEntity): Promise<MessageEntity> {
+  private async createMessageFromEmail(
+    email: EmailEntity,
+    thread: ThreadEntity,
+  ): Promise<MessageEntity> {
     const user = await this.userRepository.findByEmail(email.from.email);
     const messageSenderId = user?.id ?? null;
 

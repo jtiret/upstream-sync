@@ -84,7 +84,6 @@ Concretely, when running `yarn start`, the console should display messages group
 
 **My Answer: I created new async methods in EmailImportService which leverages the emails retrieved by the api. I also added a public method fetchAndSort to the EmailFetcherService to sort and fetch the data.**
 
-
 ### Task 2: Take messages stored in database into account
 
 Explain what would be needed, step by step, to take messages stored in the database into account when grouping messages by threads. You can write your answer in the `README.md` file. What parts of the code would you need to modify?
@@ -96,7 +95,6 @@ Explain what would be needed, step by step, to take messages stored in the datab
 When creating the messages, remove the HTML tags from the message body. Figure out the best place to add this logic and implement it.
 
 **My Answer: I added and leveraged the method removeHtmlTags in the MessageRepository**
-
 
 ### Task 4: Add a unit test
 

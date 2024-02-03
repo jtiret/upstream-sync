@@ -29,13 +29,15 @@ export class EmailFetcherService {
         ContactList.parse(response.cc),
         response.body,
         response.subject,
-        new Date(response.date)
+        new Date(response.date),
       );
     });
   }
 
   public async fetch(): Promise<EmailEntity[]> {
-    const response = await axios.get<EmailResponse[]>("https://my-json-server.typicode.com/jtiret/upstream-sync/emails");
+    const response = await axios.get<EmailResponse[]>(
+      "https://my-json-server.typicode.com/jtiret/upstream-sync/emails",
+    );
 
     return this.buildEntities(response.data);
   }
